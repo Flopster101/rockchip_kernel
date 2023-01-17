@@ -46,13 +46,14 @@
 	};
 
 	fiq_debugger: fiq-debugger {
+		status = "okay";
 		compatible = "rockchip,fiq-debugger";
 		rockchip,serial-id = <2>;
 		rockchip,wake-irq = <0>;
-		rockchip,irq-mode-enable = <0>;  /* If enable uart uses irq instead of fiq */
+		rockchip,irq-mode-enable = <1>;  /* If enable uart uses irq instead of fiq */
 		rockchip,baudrate = <115200>;  /* Only 115200 and 1500000 */
-		pinctrl-names = "default";
-		pinctrl-0 = <&uart2_xfer>;
+		pinctrl-names = [00];
+		pinctrl-0 = [00];
 		interrupts = <GIC_SPI 154 IRQ_TYPE_LEVEL_HIGH>;   /* signal irq */
 	};
 
@@ -140,7 +141,7 @@
 		};
 
 		route_hdmi: route-hdmi {
-			status = "disabled";
+			status = "okay";
 			logo,uboot = "logo.bmp";
 			logo,kernel = "logo_kernel.bmp";
 			logo,mode = "center";
