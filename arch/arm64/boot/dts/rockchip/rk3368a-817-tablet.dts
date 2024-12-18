@@ -139,7 +139,7 @@
 	sprd-mtty {
 		compatible = "sprd,mtty";
 		sprd,name = "ttyBT";
-		status = "okay";
+		status = "disabled";
 	};
 
 	wireless-wlan {
