@@ -140,3 +140,4 @@ all.config
 /configs/
 /tests/
 tbm_build_config
+/out/
