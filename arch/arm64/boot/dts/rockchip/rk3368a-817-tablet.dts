@@ -50,7 +50,7 @@
 	};
 
 	chosen: chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xff690000,115200n8 swiotlb=1 console=ttyS2,115200n8 androidboot.baseband=N/A androidboot.veritymode=enforcing androidboot.hardware=rk30board androidboot.console=ttyS2,115200n8 init=/init kpti=0";
+		bootargs = "earlycon=uart8250,mmio32,0xff690000 swiotlb=1 console=ttyS2,115200n8 androidboot.baseband=N/A androidboot.veritymode=enforcing androidboot.hardware=rk30board androidboot.console=ttyS2,115200n8 init=/init kpti=0";
 	};
 
 	rk817-sound {
