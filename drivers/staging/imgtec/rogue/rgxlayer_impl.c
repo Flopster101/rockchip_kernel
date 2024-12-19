@@ -41,8 +41,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */ /**************************************************************************/
 
-#if defined(__linux__) && defined(__KERNEL__)
 #include <linux/kernel.h>
+#if defined(__linux__) && defined(__KERNEL__)
 #include "pdump_km.h"
 #else
 #include <stdio.h>
