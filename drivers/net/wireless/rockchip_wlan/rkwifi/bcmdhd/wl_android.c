@@ -4990,40 +4990,37 @@ wl_handle_private_cmd(struct net_device *net, char *command, u32 cmd_len)
 	/* CUSTOMER_SET_COUNTRY feature is define for only GGSM model */
 	else if (strnicmp(command, CMD_COUNTRY, strlen(CMD_COUNTRY)) == 0) {
 		/*
-		 * Usage examples:
-		 * DRIVER COUNTRY US
-		 * DRIVER COUNTRY US/7
-		 */
+		* Usage examples:
+		* DRIVER COUNTRY US
+		* DRIVER COUNTRY US/7
+		*/
 		char *country_code = command + strlen(CMD_COUNTRY) + 1;
 		char *rev_info_delim = country_code + 2; /* 2 bytes of country code */
 		int revinfo = -1;
-#if defined(DHD_BLOB_EXISTENCE_CHECK)
+	#if defined(DHD_BLOB_EXISTENCE_CHECK)
 		dhd_pub_t *dhdp = wl_cfg80211_get_dhdp(net);
 
 		if (dhdp->is_blob) {
 			revinfo = 0;
 		} else
-#endif /* DHD_BLOB_EXISTENCE_CHECK */
-		if ((rev_info_delim) &&
-			(strnicmp(rev_info_delim, CMD_COUNTRY_DELIMITER,
-			strlen(CMD_COUNTRY_DELIMITER)) == 0) &&
-			(rev_info_delim + 1)) {
-			revinfo  = bcm_atoi(rev_info_delim + 1);
+	#endif /* DHD_BLOB_EXISTENCE_CHECK */
+		if (strnicmp(rev_info_delim, CMD_COUNTRY_DELIMITER, strlen(CMD_COUNTRY_DELIMITER)) == 0) {
+			revinfo = bcm_atoi(rev_info_delim + 1);
 		}
 		bytes_written = wldev_set_country(net, country_code, true, true, revinfo);
-#ifdef CUSTOMER_HW4_PRIVATE_CMD
-#ifdef FCC_PWR_LIMIT_2G
+	#ifdef CUSTOMER_HW4_PRIVATE_CMD
+	#ifdef FCC_PWR_LIMIT_2G
 		if (wldev_iovar_setint(net, "fccpwrlimit2g", FALSE)) {
 			ANDROID_ERROR(("%s: fccpwrlimit2g deactivation is failed\n", __FUNCTION__));
 		} else {
 			ANDROID_ERROR(("%s: fccpwrlimit2g is deactivated\n", __FUNCTION__));
 		}
-#endif /* FCC_PWR_LIMIT_2G */
-#endif /* CUSTOMER_HW4_PRIVATE_CMD */
+	#endif /* FCC_PWR_LIMIT_2G */
+	#endif /* CUSTOMER_HW4_PRIVATE_CMD */
 	}
 	else if (strnicmp(command, CMD_DATARATE, strlen(CMD_DATARATE)) == 0) {
 		bytes_written = wl_android_get_datarate(net, command, priv_cmd.total_len);
-	} else if (strnicmp(command, CMD_ASSOC_CLIENTS,	strlen(CMD_ASSOC_CLIENTS)) == 0) {
+	} else if (strnicmp(command, CMD_ASSOC_CLIENTS, strlen(CMD_ASSOC_CLIENTS)) == 0) {
 		bytes_written = wl_android_get_assoclist(net, command, priv_cmd.total_len);
 	}
 

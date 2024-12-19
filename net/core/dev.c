@@ -4288,8 +4288,8 @@ static struct netdev_rx_queue *netif_get_rxqueue(struct sk_buff *skb)
 }
 
 static u32 netif_receive_generic_xdp(struct sk_buff *skb,
-				     struct xdp_buff *xdp,
-				     struct bpf_prog *xdp_prog)
+					 struct xdp_buff *xdp,
+					 struct bpf_prog *xdp_prog)
 {
 	struct netdev_rx_queue *rxqueue;
 	void *orig_data, *orig_data_end;
@@ -4311,7 +4311,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
 	 * native XDP provides, thus we need to do it here as well.
 	 */
 	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
-	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
+		skb_headroom(skb) < XDP_PACKET_HEADROOM) {
 		int hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
 		int troom = skb->tail + skb->data_len - skb->end;
 
@@ -4319,8 +4319,8 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
 		 * then lets do the pskb_expand_head() work just once here.
 		 */
 		if (pskb_expand_head(skb,
-				     hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
-				     troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
+					 hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
+					 troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
 			goto do_drop;
 		if (skb_linearize(skb))
 			goto do_drop;
@@ -4371,7 +4371,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
 	/* check if XDP changed eth hdr such SKB needs update */
 	eth = (struct ethhdr *)xdp->data;
 	if ((orig_eth_type != eth->h_proto) ||
-	    (orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
+		(orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
 		__skb_push(skb, ETH_HLEN);
 		skb->protocol = eth_type_trans(skb, skb->dev);
 	}

@@ -7273,26 +7273,28 @@ void __init mem_init_print_info(const char *str)
 	 * Detect special cases and adjust section sizes accordingly:
 	 * 1) .init.* may be embedded into .data sections
 	 * 2) .init.text.* may be out of [__init_begin, __init_end],
-	 *    please refer to arch/tile/kernel/vmlinux.lds.S.
+	 *	please refer to arch/tile/kernel/vmlinux.lds.S.
 	 * 3) .rodata.* may be embedded into .text or .data sections.
 	 */
 #define adj_init_size(start, end, size, pos, adj) \
 	do { \
-		if (start <= pos && pos < end && size > adj) \
-			size -= adj; \
+		if ((unsigned long)(start) <= (unsigned long)(pos) && \
+			(unsigned long)(pos) < (unsigned long)(end) && \
+			(size) > (adj)) \
+			(size) -= (adj); \
 	} while (0)
 
-	adj_init_size(__init_begin[0], __init_end, init_data_size,
-		     _sinittext[0], init_code_size);
-	adj_init_size(_stext[0], _etext, codesize, _sinittext[0], init_code_size);
-	adj_init_size(_sdata[0], _edata, datasize, __init_begin[0], init_data_size);
-	adj_init_size(_stext[0], _etext, codesize, __start_rodata[0], rosize);
-	adj_init_size(_sdata[0], _edata, datasize, __start_rodata[0], rosize);
+	adj_init_size(__init_begin, __init_end, init_data_size,
+			 _sinittext, init_code_size);
+	adj_init_size(_stext, _etext, codesize, _sinittext, init_code_size);
+	adj_init_size(_sdata, _edata, datasize, __init_begin, init_data_size);
+	adj_init_size(_stext, _etext, codesize, __start_rodata, rosize);
+	adj_init_size(_sdata, _edata, datasize, __start_rodata, rosize);
 
-#undef	adj_init_size
+#undef  adj_init_size
 
 	pr_info("Memory: %luK/%luK available (%luK kernel code, %luK rwdata, %luK rodata, %luK init, %luK bss, %luK reserved, %luK cma-reserved"
-#ifdef	CONFIG_HIGHMEM
+#ifdef  CONFIG_HIGHMEM
 		", %luK highmem"
 #endif
 		"%s%s)\n",
@@ -7302,7 +7304,7 @@ void __init mem_init_print_info(const char *str)
 		(init_data_size + init_code_size) >> 10, bss_size >> 10,
 		(physpages - totalram_pages - totalcma_pages) << (PAGE_SHIFT - 10),
 		totalcma_pages << (PAGE_SHIFT - 10),
-#ifdef	CONFIG_HIGHMEM
+#ifdef  CONFIG_HIGHMEM
 		totalhigh_pages << (PAGE_SHIFT - 10),
 #endif
 		str ? ", " : "", str ? str : "");

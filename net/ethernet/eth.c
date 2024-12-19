@@ -165,14 +165,13 @@ __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev)
 	eth = (struct ethhdr *)skb->data;
 	skb_pull_inline(skb, ETH_HLEN);
 
-	if (unlikely(is_multicast_ether_addr_64bits(eth->h_dest))) {
-		if (ether_addr_equal_64bits(eth->h_dest, dev->broadcast))
+	if (unlikely(is_multicast_ether_addr(eth->h_dest))) {
+		if (ether_addr_equal(eth->h_dest, dev->broadcast))
 			skb->pkt_type = PACKET_BROADCAST;
 		else
 			skb->pkt_type = PACKET_MULTICAST;
 	}
-	else if (unlikely(!ether_addr_equal_64bits(eth->h_dest,
-						   dev->dev_addr)))
+	else if (unlikely(!ether_addr_equal(eth->h_dest, dev->dev_addr)))
 		skb->pkt_type = PACKET_OTHERHOST;
 
 	/*
@@ -188,17 +187,17 @@ __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev)
 		return eth->h_proto;
 
 	/*
-	 *      This is a magic hack to spot IPX packets. Older Novell breaks
-	 *      the protocol design and runs IPX over 802.3 without an 802.2 LLC
-	 *      layer. We look for FFFF which isn't a used 802.2 SSAP/DSAP. This
-	 *      won't work for fault tolerant netware but does for the rest.
+	 *	  This is a magic hack to spot IPX packets. Older Novell breaks
+	 *	  the protocol design and runs IPX over 802.3 without an 802.2 LLC
+	 *	  layer. We look for FFFF which isn't a used 802.2 SSAP/DSAP. This
+	 *	  won't work for fault tolerant netware but does for the rest.
 	 */
 	sap = skb_header_pointer(skb, 0, sizeof(*sap), &_service_access_point);
 	if (sap && *sap == 0xFFFF)
 		return htons(ETH_P_802_3);
 
 	/*
-	 *      Real 802.2 LLC
+	 *	  Real 802.2 LLC
 	 */
 	return htons(ETH_P_802_2);
 }

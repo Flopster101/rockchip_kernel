@@ -8,6 +8,8 @@ ccflags-y += -include $(srctree)/drivers/staging/imgtec/config_kernel.h \
  -I$(srctree)/$(src)/rk3368
 ccflags-$(CONFIG_X86) += -mno-soft-float
 
+ccflags-y += -Wno-sizeof-pointer-div
+
 ccflags-$(CONFIG_POWERVR_APOLLO:m=y) += -I$(srctree)/drivers/staging/imgtec/apollo
 pvrsrvkm-$(CONFIG_POWERVR_APOLLO:m=y) += ../apollo/sysconfig.o
 

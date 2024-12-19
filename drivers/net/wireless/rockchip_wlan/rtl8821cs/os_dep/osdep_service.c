@@ -602,18 +602,20 @@ inline void *dbg_rtw_zvmalloc(u32 sz, const enum mstat_f flags, const char *func
 	return p;
 }
 
-inline void dbg_rtw_vmfree(void *pbuf, u32 sz, const enum mstat_f flags, const char *func, const int line)
+// osdep_service.c
+#include "osdep_service.h" // Ensure the header is included
+
+inline void dbg_rtw_vmfree(void *pbuf, const enum mstat_f flags, u32 sz, const char *func, const int line)
 {
-
 	if (match_mstat_sniff_rules(flags, sz))
-		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, (sz));
+		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, sz);
 
-	_rtw_vmfree((pbuf), (sz));
+	_rtw_vmfree(pbuf, sz);
 
 	rtw_mstat_update(
-		flags
-		, MSTAT_FREE
-		, sz
+		flags,
+		MSTAT_FREE,
+		sz
 	);
 }
 
@@ -622,14 +624,14 @@ inline void *dbg_rtw_malloc(u32 sz, const enum mstat_f flags, const char *func, 
 	void *p;
 
 	if (match_mstat_sniff_rules(flags, sz))
-		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, (sz));
+		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, sz);
 
-	p = _rtw_malloc((sz));
+	p = _rtw_malloc(sz);
 
 	rtw_mstat_update(
-		flags
-		, p ? MSTAT_ALLOC_SUCCESS : MSTAT_ALLOC_FAIL
-		, sz
+		flags,
+		p ? MSTAT_ALLOC_SUCCESS : MSTAT_ALLOC_FAIL,
+		sz
 	);
 
 	return p;
@@ -640,30 +642,30 @@ inline void *dbg_rtw_zmalloc(u32 sz, const enum mstat_f flags, const char *func,
 	void *p;
 
 	if (match_mstat_sniff_rules(flags, sz))
-		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, (sz));
+		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, sz);
 
-	p = _rtw_zmalloc((sz));
+	p = _rtw_zmalloc(sz);
 
 	rtw_mstat_update(
-		flags
-		, p ? MSTAT_ALLOC_SUCCESS : MSTAT_ALLOC_FAIL
-		, sz
+		flags,
+		p ? MSTAT_ALLOC_SUCCESS : MSTAT_ALLOC_FAIL,
+		sz
 	);
 
 	return p;
 }
 
-inline void dbg_rtw_mfree(void *pbuf, u32 sz, const enum mstat_f flags, const char *func, const int line)
+inline void dbg_rtw_mfree(void *pbuf, const enum mstat_f flags, u32 sz, const char *func, const int line)
 {
 	if (match_mstat_sniff_rules(flags, sz))
-		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, (sz));
+		RTW_INFO("DBG_MEM_ALLOC %s:%d %s(%d)\n", func, line, __FUNCTION__, sz);
 
-	_rtw_mfree((pbuf), (sz));
+	_rtw_mfree(pbuf, sz);
 
 	rtw_mstat_update(
-		flags
-		, MSTAT_FREE
-		, sz
+		flags,
+		MSTAT_FREE,
+		sz
 	);
 }
 

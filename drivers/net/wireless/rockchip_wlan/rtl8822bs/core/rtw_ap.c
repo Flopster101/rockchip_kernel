@@ -4388,10 +4388,10 @@ void rtw_ap_update_bss_chbw(_adapter *adapter, WLAN_BSSID_EX *bss, u8 ch, u8 bw,
 #endif /* CONFIG_80211N_HT */
 }
 
-static u8 rtw_ap_update_chbw_by_ifbmp(struct dvobj_priv *dvobj, u8 ifbmp
-	, u8 cur_ie_ch[], u8 cur_ie_bw[], u8 cur_ie_offset[]
-	, u8 dec_ch[], u8 dec_bw[], u8 dec_offset[]
-	, const char *caller)
+static u8 rtw_ap_update_chbw_by_ifbmp(struct dvobj_priv *dvobj, u8 ifbmp,
+	u8 cur_ie_ch[], u8 cur_ie_bw[], u8 cur_ie_offset[],
+	u8 dec_ch[], u8 dec_bw[], u8 dec_offset[],
+	const char *caller)
 {
 	_adapter *iface;
 	struct mlme_ext_priv *mlmeext;
@@ -4400,30 +4400,36 @@ static u8 rtw_ap_update_chbw_by_ifbmp(struct dvobj_priv *dvobj, u8 ifbmp
 	int i;
 
 	for (i = 0; i < dvobj->iface_nums; i++) {
-		if (!(ifbmp & BIT(i)) || !dvobj->padapters)
+		if (!(ifbmp & BIT(i)))
 			continue;
 
 		iface = dvobj->padapters[i];
+		if (!iface)
+			continue;
+
 		mlmeext = &(iface->mlmeextpriv);
 
 		if (MLME_IS_ASOC(iface)) {
-			RTW_INFO(FUNC_ADPT_FMT" %u,%u,%u => %u,%u,%u%s\n", caller, ADPT_ARG(iface)
-				, mlmeext->cur_channel, mlmeext->cur_bwmode, mlmeext->cur_ch_offset
-				, dec_ch[i], dec_bw[i], dec_offset[i]
-				, MLME_IS_OPCH_SW(iface) ? " OPCH_SW" : "");
+			RTW_INFO(FUNC_ADPT_FMT" %u,%u,%u => %u,%u,%u%s\n", caller, ADPT_ARG(iface),
+				mlmeext->cur_channel, mlmeext->cur_bwmode, mlmeext->cur_ch_offset,
+				dec_ch[i], dec_bw[i], dec_offset[i],
+				MLME_IS_OPCH_SW(iface) ? " OPCH_SW" : "");
 		} else {
-			RTW_INFO(FUNC_ADPT_FMT" %u,%u,%u => %u,%u,%u%s\n", caller, ADPT_ARG(iface)
-				, cur_ie_ch[i], cur_ie_bw[i], cur_ie_offset[i]
-				, dec_ch[i], dec_bw[i], dec_offset[i]
-				, MLME_IS_OPCH_SW(iface) ? " OPCH_SW" : "");
+			RTW_INFO(FUNC_ADPT_FMT" %u,%u,%u => %u,%u,%u%s\n", caller, ADPT_ARG(iface),
+				cur_ie_ch[i], cur_ie_bw[i], cur_ie_offset[i],
+				dec_ch[i], dec_bw[i], dec_offset[i],
+				MLME_IS_OPCH_SW(iface) ? " OPCH_SW" : "");
 		}
 	}
 
 	for (i = 0; i < dvobj->iface_nums; i++) {
-		if (!(ifbmp & BIT(i)) || !dvobj->padapters)
+		if (!(ifbmp & BIT(i)))
 			continue;
 
 		iface = dvobj->padapters[i];
+		if (!iface)
+			continue;
+
 		mlmeext = &(iface->mlmeextpriv);
 		network = &(mlmeext->mlmext_info.network);
 
@@ -4437,8 +4443,7 @@ static u8 rtw_ap_update_chbw_by_ifbmp(struct dvobj_priv *dvobj, u8 ifbmp
 		if (MLME_IS_ASOC(iface)
 			&& (mlmeext->cur_channel != dec_ch[i]
 				|| mlmeext->cur_bwmode != dec_bw[i]
-				|| mlmeext->cur_ch_offset != dec_offset[i])
-		) {
+				|| mlmeext->cur_ch_offset != dec_offset[i])) {
 			if (rtw_linked_check(iface) == _TRUE) {
 				#ifdef CONFIG_SPCT_CH_SWITCH
 				if (1)
