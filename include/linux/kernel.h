@@ -16,6 +16,8 @@
 #include <uapi/linux/kernel.h>
 #include <linux/limits.h>
 
+#define __linux__ 1
+
 #define STACK_MAGIC	0xdeadbeef
 
 /**
